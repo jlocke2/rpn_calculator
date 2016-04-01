@@ -1,14 +1,13 @@
 class RPN
 
-  def initialize
-    @input = $stdin
-    @output = $stdout
+  def initialize(opts = {})
+    @input = opts[:input] || $stdin
+    @output = opts[:output] || $stdout
     @operands = []
-    @operators = ["+","-","*","/"]
+    @operators = opts[:operators] || ["+","-","*","/"]
   end
 
-  # simple infinite loop to allow the calculator to continue indefinitely
-  # until intentionally exited with q or ctrl+c
+  # keep calculating until intentionally exited with q or ctrl+c
   def start
     loop {
       user_input = get_input
@@ -34,18 +33,15 @@ class RPN
     exit
   end
 
-  # take the last two operands and apply arithmetic function to them
-  # push the resulting new_value back to @operands array
-  # then print this new_value to console
+
   def operate(func)
-    new_value = @operands.pop(2).inject(func.to_sym)
+    new_value = @operands.pop(2).reduce(func.to_sym)
     @operands.push(new_value)
     @output.puts trim(new_value)
   end
 
-  # convert user_input to Float, if possible
-  # then print value to command line after trimming
-  # push value to @operands array
+  # Float() is quick way to convert user input
+  # can handle integers, floats, and strings representing numbers
   # if cannot convert to Float, rescue error and print helpful message to console
   def add_to_operands(user_input)
     user_input = Float(user_input)
@@ -55,7 +51,6 @@ class RPN
     @output.puts "Please enter a number, a math symbol, or the letter q to exit"
   end
 
-  # convert num to both Integer and Float
   # if num is a whole number or contains only zeros after the decimal, use integer
   # otherwise it contains significant values after the decimal, and we use float
   def trim(num)
