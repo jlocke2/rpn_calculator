@@ -64,7 +64,7 @@ describe RPN do
     context "given 'k'" do
       it "returns error string" do
         rpn.send(:add_to_operands, 'k')
-        output = "Please enter a number, a math symbol, or the letter q"
+        output = "Please enter a number, a math symbol, or the letter q to exit"
       end
     end
   end
